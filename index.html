@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width,height=device-height, initial-scale=1.0, user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<link rel="shortcut icon" href="images/favicon.png">
+		<title>2FA Auth</title>
+		<script src="assets/js/jquery.2.1.3.min.js"></script>
+		<script src="assets/js/jquery.mobile.min.js"></script>
+		<script src="assets/js/jssha.js"></script>
+		<script src="assets/js/gauth.js"></script>
+		<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+		<style>
+		.row+.row {
+		  margin-top: 20px;
+		}
+		a {
+				text-decoration: none;
+				color: #2b8dff;
+			}
+
+			*,
+			#main p {
+				padding: 0px;
+				margin: 0px;
+			}
+
+			body {
+				background-size: 100%;
+				background-attachment: fixed;
+				background: none;
+			}
+
+			input {
+				width: 100%;
+				line-height: 35px;
+			}
+
+			button {
+				padding: 5px 5px;
+				position: relative;
+				float: left;
+				font-weight: 800;
+			}
+
+			li span {
+				font-weight: 800;
+				word-break: break-all;
+				width: auto;
+				white-space: pre-wrap;
+				word-wrap: break-word;
+				overflow: hidden;
+			}
+
+			input {
+				min-width: 100%;
+				line-height: 35px;
+				border-radius: 5px;
+				border: 2px solid rgba(0, 0, 0, .4)
+			}
+
+			input:focus {
+				border-radius: 5px;
+				border: 2px solid rgba(0, 0, 0, .1)
+			}
+
+			li p {
+				max-width: 50%;
+				margin-left: 10px !important;
+				line-height: 36px;
+				position: relative;
+				float: left;
+			}
+
+			#main {
+				margin: 20px 20px 0 20px;
+				position: relative;
+				float: left;
+			}
+
+			#main li {
+				width: 100%;
+				padding: 8px 0;
+				line-height: 36px;
+				position: relative;
+				float: left;
+			}
+
+			#main ul {
+				margin: 20px;
+				padding: 0px;
+			}
+
+			#main hr {
+				margin: 20px 0;
+			}
+
+			#main h2 {
+				margin: 10px 0px;
+			}
+
+			#updatekey {
+				font-weight: 800;
+				height: 2.35rem;
+				padding: 5px 8px;
+				border: 0px;
+				border-radius: 6px;
+				color: white;
+				box-shadow: 2px 2px 2px rgba(0,0,0,.2);
+				background: #2b8dff;
+			}
+
+			.conul {
+				list-style-type: none;
+			}
+
+			.ui-loading .ui-loader {
+				display: block;
+			}
+
+			.ui-loader {
+				display: none;
+				position: absolute;
+				opacity: .85;
+				z-index: 100;
+				left: 50%;
+				width: 200px;
+				margin-left: -130px;
+				margin-top: -35px;
+				padding: 10px 30px;
+			}
+
+			.cmain .ui-page,
+			.cmain .ui-page-theme-a,
+			.cmain .ui-page-active {
+				min-height: 300px !important;
+			}
+
+			.boldfont {
+				font-weight: 800;
+			}
+
+			.green {
+				color: rgb(81 255 137);
+			}
+
+			.txtnum {
+				color: #2b8dff;
+			}
+
+			#main dl.alt dt {
+				width: 6em !important
+			}
+
+			@media screen and (max-width: 360px) {
+				#main {
+					border-radius: 5px;
+					margin: 10px 10px 0 10px;
+				}
+			}
+  </style>
+	<body class="cmain">
+	<div class="container-fluid">
+    <header class="col-md-11">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-2">
+            <a href="http://2fa.vip/">
+              <h3>2fa.vip</h3>
+            </a>
+          </div>
+       
+
+        </div>
+      </div>
+    </header>
+    <!-- Header -->
+
+    <div class="row">
+      <div class="col-sm-2"></div>
+      <main class="col-sm-6">
+        <div class="row">
+          <b>* 2FA Sercet</b>
+          <textarea class="form-control" id="listToken" placeholder="BK5V TVQ7 D2RB..." rows="6"></textarea>
+        </div>
+        <div class="row">
+          <div class="text-left">
+            <a class="btn btn-primary" id="submit">
+              Submit
+            </a>
+          </div>
+        </div>
+        <div class="row">
+          <b>* 2FA Code </b>
+          <textarea class="form-control" id="output" placeholder="ABC|2FA Code" rows="6"></textarea>
+        </div>
+        <div class="row">
+          <div class="text-left">
+            <a class="btn btn-primary" id="copy_btn">
+              Copy
+            </a>
+          </div>
+        </div>
+        <div class="row"></div>
+        <div class="row">
+<!-- 公告开始  
+<style type="text/css">
+
+.STYLE1 {
+	font-size: 18px;
+	font-weight: bold;
+}
+.STYLE2 {font-size: 24px}
+.STYLE3 {font-family: "新宋体"}
+
+</style>			<div class="panel panel-default">
+			  <div class="panel-heading">
+			    <h3 class="panel-title STYLE2">公告</h3>
+			  </div>
+			  <div class="panel-body">
+<p>
+    <span style="color: rgb(255, 0, 0);"><span class="STYLE3"><strong><span style="font-size: 18px;">因原域名</span></strong><span class="STYLE1">维护中（预计3月8号完成）</span></span></span></p>
+<p>
+    <br/>
+</p>
+<p>
+    <span style="color: rgb(255, 0, 0);"><strong><span style="color: rgb(255, 0, 0); font-size: 18px;"><span class="STYLE3">FB账号购买请用新域名</span>：</span></strong></span><a href="https://511fb.com/" target="_blank" style="font-size: 28px; text-decoration: underline; color: rgb(255, 0, 0);"><span style="color: rgb(255, 0, 0);"><strong><span style="color: rgb(255, 0, 0);">511fb.com</span></strong></span></a></p>
+
+
+<!-- 公告结束 -->
+			  </div>
+			</div>
+        </div> 
+		
+		
+		
+      </main>
+      <div class="col-sm-1"></div>
+      <div class="col-sm-2">
+      </div>
+	
+    </div>
+	
+	
+		<div data-role="page" id="main" style="display:none">
+			<div data-role="content">
+				<ul class="conul">
+					<li>
+						<h2 id="codename">验证码生成工具</h2>
+					</li>
+					<li><input name="amount" id="inputcode" placeholder="请输入双重密钥" /></li>
+					<li><button id="updatekey">点击获取验证码</button>
+						<p id="copytip" class="boldfont green"> 🌼 </p>
+					</li>
+					<li>当前验证码：<span id="codenum" class="txtnum"></span></li>
+					<li>双重密钥为：<span id="codetxt"></span></li>
+					<li>剩余的时间：<span id="codetime"></span> (请在倒计时结束前输入验证码完成登录或者验证)</li>
+					<li>演示的密钥：<span class="txtyanshi">7J64V3P3E77J3LKNUGSZ5QANTLRLTKVL</span>（此密钥只做演示使用，点击可复制）</li>
+					<li>
+						<hr />
+					</li>
+				  <li></li>
+			  </ul>
+			</div>
+		</div>
+		<script src="assets/js/copy.js"></script>
+		<script>
+		var keysController = new gauth.KeysController();
+			//生成验证码的主要函数
+			$(document).on('pagecreate', '#main', function() {
+				keysController.init();
+			});
+			$("#copy_btn").on("click", function(){
+				// $("#updatekey").click();
+				$("#output").select();
+				document.execCommand('copy');
+			});
+			//点击获取并复制
+			$("#updatekey").on("click", function() {
+				setTimeout(function() {
+					if ($("#codenum").text() == "" || $("#codenum").text() == null) {
+						$("#copytip").text("请输入密钥💡");
+						$("#copytip").css("color", "#ffb714");
+					} else {
+						copyClassVal(".txtnum");
+						$("#copytip").text("验证码已复制🍺");
+						$("#copytip").css("color", "rgb(104 203 136)");
+					}
+				}, 500);
+			});
+			$("#submit").on("click", function(){
+				keysController.getCode();
+			});
+
+			//复制演示密钥
+			$(".txtyanshi").on("click", function() {
+				copyClassVal(".txtyanshi");
+				$("#copytip").text("演示密钥已复制👌");
+				$("#copytip").css("color", "rgb(104 203 136)");
+			});
+		</script>
+	</body>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?0b51a26d3c106d85f105d21780eaa0e4";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+	
+</html>
