@@ -189,7 +189,7 @@
 			var params = getUrlParams(window.location.href)
 			if (params != null && Object.keys(params).length > 0) {
 				let secret = params['secret']
-				document.getElementById("listToken").value = secret
+				document.getElementById("listToken").value = decodeURI(secret)
 				keysController.getCode();
 			}
 		}
