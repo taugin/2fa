@@ -175,6 +175,25 @@
 
         </div>
       </div>
+	  <script>
+		function getUrlParams(url) {
+			const paramsRegex = /[?&]+([^=&]+)=([^&]*)/gi;
+			const params = {};
+			let match;
+			while (match = paramsRegex.exec(url)) {
+				params[match[1]] = match[2];
+			}
+			return params;
+		}
+		window.onload=function() {
+			var params = getUrlParams(window.location.href)
+			if (params != null && Object.keys(params).length > 0) {
+				let secret = params['secret']
+				document.getElementById("listToken").value = secret
+				keysController.getCode();
+			}
+		}
+	  </script>
     </header>
     <!-- Header -->
 
